@@ -8,6 +8,20 @@ var expiration = workflow.scratchpad.ssl_expiration;
 var ssl_process = true;
 var ssl_process_msg = 'SSL renewal validation tracking for ' + sslName + ':';
 
+//Test to see if SSL is linked to load balancer, if so fail automation
+var lb = new GlideRecord('u_ssl_linked_assets');
+lb.addQuery('sslci_sys_id',sslSysID);
+lb.addQuery('relci_parent.name','CONTAINS','lb');
+lb.query();
+
+if (lb.next()) {
+
+	workflow.info('SSL Renewal Validation: Load balancer check - Error: SSL is related to one or more load balancers');
+	ssl_process = false;
+	ssl_process_msg += '\n - ERROR: SSL is related to one or more load balancers';
+
+}
+
 //look up URL value from view
 var url = new GlideRecord('u_ssl_linked_assets');
 url.addQuery('sslci_sys_id',sslSysID); //find records with SSL sys_id
@@ -95,7 +109,7 @@ while (url.next()) {
 							else {
 								workflow.info('SSL Renewal Validation: IP check - Error: Server IP could not be found');
 								ssl_process = false;
-								ssl_process_msg += '\n - Server IP could not be found for ' + winserv.name + '.';
+								ssl_process_msg += '\n - ERROR: Server IP could not be found for ' + winserv.name + '.';
 							}
 							
 							//reset baseIPValue
@@ -104,13 +118,13 @@ while (url.next()) {
 						else {
 							workflow.info('SSL Renewal Validation: Server OS check - Error: Server OS is Windows 2003 or NULL');
 							ssl_process = false;
-							ssl_process_msg += '\n - Server OS check failed, ' + winserv.name + ' is not Windows 2008 or higher.';
+							ssl_process_msg += '\n - ERROR: Server OS check failed, ' + winserv.name + ' is not Windows 2008 or higher.';
 						}
 					}
 					else {
 						workflow.info('SSL Renewal Validation: Server OS check - Error: Server could not be found using sys_id');
 						ssl_process = false;
-						ssl_process_msg += '\n - Server could not be located using sys_id (' + webLink.relci_parent + ').';
+						ssl_process_msg += '\n - ERROR: Server could not be located using sys_id (' + webLink.relci_parent + ').';
 					}
 					servLoop = servLoop + 1;
 				}
@@ -118,7 +132,7 @@ while (url.next()) {
 			else {
 				workflow.info('SSL Renewal Validation: Skipping SSL ' + sslName + ' - does not have valid related server(s).');
 				ssl_process = false;
-				ssl_process_msg += '\n - No valid related server(s) to install on.';
+				ssl_process_msg += '\n - ERROR: No valid related server(s) to install on.';
 			}
 		}
 		
@@ -130,7 +144,7 @@ while (url.next()) {
 	else {
 		workflow.info('SSL Renewal Validation: Website check - Error: Website could not be found using URL');
 		ssl_process = false;
-		ssl_process_msg += '\n - Associated website not found using URL.';
+		ssl_process_msg += '\n - ERROR: Associated website not found using URL.';
 	}
 }
 
