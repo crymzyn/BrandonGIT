@@ -1,5 +1,3 @@
-//Brandon GIT Test
-
 //get target date, 21 days out from job date
 var godate = new GlideDateTime();
 godate.addDays(21);
