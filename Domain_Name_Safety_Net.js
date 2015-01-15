@@ -158,6 +158,8 @@ while (dn.next()) {
 		var sysid = inc.insert();
 		//gs.log(sysid);
 		
+		
+		/* NOT NEEDED - ADDING CI TO inc.cmdb_ci CREATES RELATIONSHIP!
 		//attach affected CI to new incident
 		var affCI = new GlideRecord('task_ci');
 		affCI.initialize();
@@ -165,6 +167,8 @@ while (dn.next()) {
 		affCI.ci_item = domain;
 		var sysid2 = affCI.insert();
 		//gs.log(sysid2);
+		
+		*/
 		
 	}
 	
