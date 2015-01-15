@@ -152,6 +152,7 @@ while (dn.next()) {
 		inc.impact = 1;
 		inc.urgency = 3;
 		inc.u_event_start_date = now.getDisplayValue();
+		inc.cmdb_ci = domain;
 		inc.short_description = 'DOMAIN EXPIRING - ' + domainName;
 		inc.description = 'Domain name \'' + domainName + '\' is expiring on \'' + expiration + '\'.';
 		var sysid = inc.insert();
