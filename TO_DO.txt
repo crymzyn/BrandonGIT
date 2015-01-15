@@ -5,6 +5,8 @@ TO DO...
 	-- 21 day job - turn on and client-owned goes to SYSTEM FEED
 	-- Biz rule to mark inactive - day after expiry
 
+=======
+-- Domains good up to 2.7.15 (they have been opened) - turn job on to run Sun morn (1.18.15)
 -- Check prod 'let expires' to make sure to update stats on u_domain_name_renewals
 -- Kill workflow activities on contact change?
 -- Mueller data for Project/Task
