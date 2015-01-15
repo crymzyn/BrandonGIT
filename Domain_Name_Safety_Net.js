@@ -82,7 +82,7 @@ gs.log('BSY --> XML Output from SOAP Call to Centralized Logger' + output);
 
 //###### Maritz IT Centralized Logger - End ######
 
-//###### Domain Expiration Check Execution - Begin #####
+//###### Domain Expiration Check - Begin #####
 
 //create variables for lookups
 var domain = '';
@@ -180,5 +180,5 @@ while (dn.next()) {
 	
 }
 
-//##### Domain Renewal Execution - End #####
+//##### Domain Expiration Check - End #####
 gs.log('BSY --> Domain name expiration check end');
