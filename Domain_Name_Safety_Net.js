@@ -102,37 +102,44 @@ while (dn.next()) {
 	//domain renewal ritm open already?
 	//set variable ticket to false - change to true if already has ritm open
 	var ticket = false;
-
+	
 	//check affected CI table to see if renewal ritm is open for this domain
 	var ritmChk = new GlideRecord('task_ci');
 	ritmChk.addQuery('ci_item',dn.sys_id);
 	ritmChk.addQuery('task.state',1);
 	ritmChk.addQuery('task.cat_item.name','Domain Name Renewal Request');
 	ritmChk.query();
-
+	
 	while (ritmChk.next()) {
-
+		
 		//if we have a record here, ritm is open - mark ticket as true to skip opening incident
 		ticket = true;
 		gs.log('Domain \'' + dn.name + '\' has a renewal RITM open = ' + ritmChk.task.number);
-
+		
 	}
-
+	
 	if (ticket == false) {
-
+		
 		gs.log('BSY --> Domain Name Expiration: We matched a domain name expiring with no associated renewal RITM, sys_id = ' + dn.sys_id);
 		
 		//poulate variables
 		domain = dn.sys_id;
 		domainName = dn.name;
-		contact = dn.u_contact_name;
 		expiration = dn.u_expiration_date;
+		
+		var owner = dn.u_owner;
+		if (owner == 'Client' || ('' + dn.u_contact_name) == '') {
+			contact = 'baffb39f540ba84076be372d61ca1f04'; //SYSTEM FEED sys_id
+		} 
+		else {
+			contact = dn.u_contact_name;
+		}
 		
 		gs.log('BSY --> Domain Name Expiration: Incident Creation Initiated...  Domain Name Details: \nBSY --> sys_id = ' + domain + '\nBSY --> name = ' + domainName + '\nBSY --> contact = ' + contact + '\nBSY --> expiration = ' + expiration);
 		
 		//get current date/time
 		var now = new GlideDateTime();
-
+		
 		//create incident for any domains that are expiring
 		var inc = new GlideRecord('incident');
 		inc.initialize();
@@ -145,11 +152,12 @@ while (dn.next()) {
 		inc.impact = 1;
 		inc.urgency = 3;
 		inc.u_event_start_date = now.getDisplayValue();
+		inc.cmdb_ci = domain;
 		inc.short_description = 'DOMAIN EXPIRING - ' + domainName;
 		inc.description = 'Domain name \'' + domainName + '\' is expiring on \'' + expiration + '\'.';
 		var sysid = inc.insert();
 		//gs.log(sysid);
-
+		
 		//attach affected CI to new incident
 		var affCI = new GlideRecord('task_ci');
 		affCI.initialize();
@@ -157,15 +165,15 @@ while (dn.next()) {
 		affCI.ci_item = domain;
 		var sysid2 = affCI.insert();
 		//gs.log(sysid2);
-				
+		
 	}
-
+	
 	//reset variables
 	domain = '';
 	domainName = '';
 	contact = '';
 	expiration = '';
-
+	
 }
 
 //##### Domain Renewal Execution - End #####
