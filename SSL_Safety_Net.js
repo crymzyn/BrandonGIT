@@ -2,8 +2,8 @@
 var godate = new GlideDateTime();
 godate.addDays(21);
 
-var startdate = new GlideDateTime(godate.getDisplayValue());
-//var startdate = new GlideDateTime('2014-12-20 00:00:00');
+//var startdate = new GlideDateTime(godate.getDisplayValue());
+var startdate = new GlideDateTime('2015-02-07 00:00:00');
 //gs.log('BSY --> Working date = ' + startdate.getDate());
 
 //log beginning in SN logs
@@ -85,8 +85,8 @@ gs.log('BSY --> XML Output from SOAP Call to Centralized Logger' + output);
 //###### SSL Expiration Check - Begin #####
 
 //create variables for lookups
-var ssl = '';
-var sslName = '';
+var ssl_sysid = '';
+var ssl_name = '';
 var contact = '';
 var expiration = '';
 
@@ -120,22 +120,23 @@ while (ssl.next()) {
 	
 	if (ticket == false) {
 		
-		gs.log('BSY --> SSL Certificate Expiration: We matched an SSL expiring with no associated renewal RITM, sys_id = ' + dn.sys_id);
+		gs.log('BSY --> SSL Certificate Expiration: We matched an SSL expiring with no associated renewal RITM, sys_id = ' + ssl.sys_id);
 		
-		//poulate variables
-		ssl = ssl.sys_id;
-		sslName = ssl.name;
+		//populate variables
+		ssl_sysid = ssl.sys_id;
+		ssl_name = '' + ssl.name;
 		expiration = ssl.u_expiration_date;
+		
 		
 		var owner = ssl.u_owner;
 		if (owner == 'Client' || ('' + ssl.u_contact_name) == '') {
 			contact = 'baffb39f540ba84076be372d61ca1f04'; //SYSTEM FEED sys_id
-		} 
+		}
 		else {
 			contact = ssl.u_contact_name;
 		}
 		
-		gs.log('BSY --> SSL Certificate Expiration: Incident Creation Initiated...  SSL Details: \nBSY --> sys_id = ' + ssl + '\nBSY --> name = ' + sslName + '\nBSY --> contact = ' + contact + '\nBSY --> expiration = ' + expiration);
+		gs.log('BSY --> SSL Certificate Expiration: Incident Creation Initiated...  SSL Details: \nBSY --> sys_id = ' + ssl_sysid + '\nBSY --> name = ' + ssl_name + '\nBSY --> contact = ' + contact + '\nBSY --> expiration = ' + expiration);
 		
 		//get current date/time
 		var now = new GlideDateTime();
@@ -152,9 +153,9 @@ while (ssl.next()) {
 		inc.impact = 1;
 		inc.urgency = 3;
 		inc.u_event_start_date = now.getDisplayValue();
-		inc.cmdb_ci = ssl;
-		inc.short_description = 'SSL EXPIRING - ' + sslName;
-		inc.description = 'SSL \'' + sslName + '\' is expiring on \'' + expiration + '\'.';
+		inc.cmdb_ci = ssl_sysid;
+		inc.short_description = 'SSL EXPIRING - ' + ssl_name;
+		inc.description = 'SSL \'' + ssl_name + '\' is expiring on \'' + expiration + '\'.';
 		var sysid = inc.insert();
 		//gs.log(sysid);
 		
@@ -173,8 +174,8 @@ while (ssl.next()) {
 	}
 	
 	//reset variables
-	ssl = '';
-	sslName = '';
+	ssl_sysid = '';
+	ssl_name = '';
 	contact = '';
 	expiration = '';
 	
