@@ -1,12 +1,12 @@
 TO DO...
 
 -- Domain 
-
+	-- STATUS TRACKING ON RITM - can they see?  HIDE.
 	-- 21 day job - turn on and client-owned goes to SYSTEM FEED
 	-- Biz rule to mark inactive - day after expiry
 
 =======
--- Domains good up to 2.7.15 (they have been opened) - turn job on to run Sun morn (1.18.15)
+
 -- Check prod 'let expires' to make sure to update stats on u_domain_name_renewals
 -- Kill workflow activities on contact change?
 -- Mueller data for Project/Task
@@ -79,6 +79,7 @@ staging.hyundai.maritz.com
 -x- once notifications are changed, contact change method changes to insert in correct notifcation path
 -x- CONTACT CHANGES - check CI for change?  safety net?
 -x- WRITE load balancer checks 
+-x- SSLs good up to 2.7.15 (they have been opened) - turn job on to run Sun morn (1.18.15)
 
 -i- Windows web/IIS servers - Digi ONLY
 -i- 11/21/14 - DDAY
@@ -111,8 +112,9 @@ DOMAIN NAME:
 -x- Comments field on emails - "Comments: (Enter billing GL here if required)"
 -x- Run 2/12 +
 -x- Add 'Other - see comments' to project/task selections - Check with Tonya tomorrow...
-	-- Make project/task mandatory
-	-- If other selected, make comments mandatory as well
+	-x- Make project/task mandatory
+	-x- If other selected, make comments mandatory as well
+-x- Domains good up to 2.7.15 (they have been opened) - turn job on to run Sun morn (1.18.15)
 
 DNS CLEANUP (ADD-ON):
 
