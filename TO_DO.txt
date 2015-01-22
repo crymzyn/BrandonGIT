@@ -2,6 +2,7 @@ TO DO...
 
 -- REGISTER FOR KNOWLEDGE!
 -- FIX NAME CHANGE CRAP!
+-- 4 days out bump p2 to p1 - Domain and SSL
 
 GROUP AUDIT:
 
