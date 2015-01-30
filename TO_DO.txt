@@ -1,10 +1,18 @@
 TO DO...
 
--- REGISTER FOR KNOWLEDGE!
--- FIX NAME CHANGE CRAP!
+-x- REGISTER FOR KNOWLEDGE!
+-x- FIX NAME CHANGE CRAP!
 -- 4 days out bump p2 to p1 - Domain and SSL
 
 GROUP AUDIT:
+
+[1/26/2015 1:47 PM] Barbee, Kendall: 
+US	FENDCUS01	156.45.65.61
+MNETe	FENDCMNETE01	156.45.59.121
+MNETi	FENDCMNETI01	172.19.13.251
+MPN	FENDCMPN01	10.99.13.251
+MPNe	FENDCMPNE01	156.45.69.251
+MPNi	FENDCMPNI01	192.168.238.251
 
 -- Open ticket for whole phase 2 update
 -- Open requests for LDAP connection to all domain DCs and add/update s_
