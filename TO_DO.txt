@@ -1,8 +1,19 @@
 TO DO...
 
--x- REGISTER FOR KNOWLEDGE!
--x- FIX NAME CHANGE CRAP!
+--
+staging.mqtreporting.com
+fenwebmrs14
+Les Fredrick
+
+www.lovesgoldenheart.programhq.com
+fenwebmmp28
+Todd Dohogne 
+
 -- 4 days out bump p2 to p1 - Domain and SSL
+
+--
+//server provisioning citrix rule...
+FEN = Location   XEN = Citrix Type  APPP = Application Production server  XXX is a three digit number that matches up to the last octet of the ip address
 
 GROUP AUDIT:
 
@@ -160,6 +171,8 @@ HOME:
 -x- TRY TO GET TO GERRY TONIGHT
 -x- Kim Siefert email
 -x- Build mock up for tomorrow
+-x- REGISTER FOR KNOWLEDGE!
+-x- FIX NAME CHANGE CRAP!
 
 NOTES - Citrix Meeting
 
