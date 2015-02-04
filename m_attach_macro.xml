@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<j:jelly trim="true" xmlns:g="glide" xmlns:g2="null" xmlns:j="jelly:core" xmlns:j2="null">
+ 
+<g:evaluate>
+var rprf = RP.getReferringURL();
+var og = (rprf.indexOf('sysparm_guide') >= 0);
+</g:evaluate>
+
+<g:evaluate>
+var rprf = RP.getReferringURL();
+var ri = (rprf.indexOf('sysparm_guide') == -1);
+</g:evaluate>
+ 
+<j:if test="${og}">
+<div id="order_guide_item_attachment">
+	<div id="header_attachment" style="display: block; width: 100%; overflow: hidden;">
+		<div id="header_attachment_size_checker">
+		<ul id="header_attachment_list">
+			<li>
+				<a id="header_attachment_list_link" href='#' class="attachment" onclick="saveCatAttachment(gel('sysparm_cart_edit').value, 'sc_cart_item'); return false;">
+					<img title="Attachments..." src="images/icons/attachment.gifx" height="16" border="0" width="16" /> $[sp]
+					${gs.getMessage('Manage Attachments')} (<span id="attachNumSpan" class=""></span>):
+				</a>
+			</li>
+				<script type="text/javascript">
+                    document.getElementById('attachNumSpan').setAttribute('class','attachmentNumber_'+gel("sysparm_cart_edit").value);
+ 					updateAttachmentCount(gel('sysparm_cart_edit').value);
+ 					if($('header_attachment'))
+					$('header_attachment').style.height = '20px';
+				</script>
+	    </ul>
+		</div>			
+	</div>
+</div>
+<script>
+//This initializes the default action. Do you want attachments to be displayed or not onload.  To show, change the .show() to .hide()
+$('order_guide_item_attachment').show();
+</script>
+</j:if>
+
+<j:if test="${ri}">
+<div id="request_item_attachment">
+	<div id="header_attachment" style="display: block; width: 100%; overflow: hidden;">
+        <div id="header_attachment_size_checker">
+		<ul id="header_attachment_list_req" style="list-style: none; padding: 0px; margin: 0px;">
+			<li>
+				<a id="header_attachment_list_link" href='#' class="attachment" onclick="saveCatAttachment(gel('sysparm_item_guid').value, 'sc_cart_item'); return false;">
+					<img title="Attachments..." src="images/icons/attachment.gifx" height="16" border="0" width="16" /> $[sp]
+					${gs.getMessage('Manage Attachments')} (<span id="attachNumSpan" class=""></span>):
+				</a>
+			</li>
+				<script type="text/javascript">
+					document.getElementById('attachNumSpan').setAttribute('class','attachmentNumber_'+gel("sysparm_item_guid").value);
+					updateAttachmentCount(gel('sysparm_item_guid').value);
+					if($('header_attachment'))
+					$('header_attachment').style.height = '20px';
+				</script>
+		</ul>
+	    </div>			
+	</div>
+</div>
+<script>
+//This initializes the default action. Do you want attachments to be displayed or not onload.  To show, change the .show() to .hide()
+$('request_item_attachment').show();
+</script>
+</j:if>
+
+</j:jelly>
