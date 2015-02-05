@@ -6,9 +6,10 @@ var rprf = RP.getReferringURL();
 var og = (rprf.indexOf('sysparm_guide') >= 0);
 </g:evaluate>
 
-<g:evaluate>
+<g:evaluate jelly="true">
 var rprf = RP.getReferringURL();
 var ri = (rprf.indexOf('sysparm_guide') == -1);
+var sysid = jelly.sysparm_sysid;
 </g:evaluate>
  
 <j:if test="${og}">
@@ -44,14 +45,14 @@ $('order_guide_item_attachment').show();
         <div id="header_attachment_size_checker">
 		<ul id="header_attachment_list_req" style="list-style: none; padding: 0px; margin: 0px;">
 			<li>
-				<a id="header_attachment_list_link" href='#' class="attachment" onclick="saveCatAttachment(gel('sysparm_item_guid').value, 'sc_cart_item'); return false;">
+				<a id="header_attachment_list_link" href='#' class="attachment" onclick="saveCatAttachment(${sysid}), 'sc_cart_item'); return false;">
 					<img title="Attachments..." src="images/icons/attachment.gifx" height="16" border="0" width="16" /> $[sp]
 					${gs.getMessage('Manage Attachments')} (<span id="attachNumSpan" class=""></span>):
 				</a>
 			</li>
 				<script type="text/javascript">
-					document.getElementById('attachNumSpan').setAttribute('class','attachmentNumber_'+gel("sysparm_item_guid").value);
-					updateAttachmentCount(gel('sysparm_item_guid').value);
+					document.getElementById('attachNumSpan').setAttribute('class','attachmentNumber_'+${sysid});
+					updateAttachmentCount(${sysid});
 					if($('header_attachment'))
 					$('header_attachment').style.height = '20px';
 				</script>
