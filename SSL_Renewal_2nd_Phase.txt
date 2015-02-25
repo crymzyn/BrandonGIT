@@ -1,0 +1,37 @@
+SSL / Domain Renewal - Phase 2 Items
+
+--	Handle thumbprints
+--	Record the billing dept and present the previous data to user to be helpful
+--	Add logic to nicely tell WSO where in the process the process errored
+--	Send a notification email shortly before the automation runs, on the options the user selected and what will happen next
+--	Do not let the user schedule an install past the expiration date of the current SSL
+--	SSL CI flag that says never automatically apply the cert for this record, kick a task to WSO
+
+-----------
+
+-- If they choose to let a domain/ssl expire , I would like to present them with a list of related URL’s and a link to the website removal form below:
+
+https://maritz.service-now.com/com.glideapp.servicecatalog_cat_item_view.do?v=1&sysparm_id=a3e9f38e106fac40ba8705ce6e132815&sysparm_link_parent=2396e43a103e2040ba8705ce6e132839&sysparm_catalog=e0d08b13c3330100c8b837659bba8fb4&sysparm_catalog_view=catalog_default
+
+95 % of the time, they will need to decom a site when they truly need to let the SSL expire. There are occasions that site requirements change and they need the site, yet they no longer need an SSL so this shouldn’t be required to proceed.
+
+The other item I needed your help with was to gain a list of servers/sites that are related to the URL that relates to the SSL. (ick – I know)
+
+-- Also on the let expire a task should be kicked out to WSO to remove domain from DNS.
+
+-- Update the company listing for Digicert to DigiCert Inc.
+
+-x-	Add a link to the final email, to the site that we renewed 
+-x-	Handle mms website with host header config
+-x-	Change default deployment date text to boldly tell the user what it means
+-x-	Talk about proper default deployment time and pre
+-x-	Add email notification to user once we kick a task to WSO and lock the record 
+-x-	Update alert window pricing
+-x-	Use apptio API  to send billing info
+-x-	Move assistance question above deployment date on form
+-x-	Handle let expire case to not immediately mark the record inactive, wait.
+-x-	Dashboard to see 
+-x-	Hand certs that are both app and website
+-x-	Handle different cert prices dynamically, from other vendors when we add vendors
+-x-	Handle change of mind about deployment time
+-x-	Handle root/ intermediate certs
