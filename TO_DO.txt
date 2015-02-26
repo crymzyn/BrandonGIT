@@ -1,5 +1,19 @@
 TO DO...
 
+--
+
+Change Control
+--approval-not yet requested
+--type-non standard
+--requested_by-contact
+--u_sub_type-?
+--impact-?
+--urgency-?
+--short-description-'SSL Renewal Install - URL'
+--description-'ENTER TEXT HERE'
+--cmdb_ci-SSL sys_id
+--OTHER FIELDS
+
 -- 
 
 Does cert info back from Digi give new expiration date?  Need to populate CI record with that to ensure validity.
