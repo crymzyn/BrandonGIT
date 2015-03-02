@@ -2,7 +2,41 @@ TO DO...
 
 --
 
-Change Control
+On the let expire a task should be kicked out to WSO to remove domain from DNS
+
+--
+
+Change Control:
+--Assignment Group = Windows Server Ops Operations
+--Do we really want to assign to Terry in script?
+-!-Backout plan = 'Reapply original certificate and notify ?????'
+--Description = 'Cert location: D:\Ops_Temp\certs\
+	Import cert into the personal store
+	Associate new cert to site
+	Delete expiring certificate from the personal store
+	Update Config with new expiration date'
+--Impact = 2 - Site/Dept/BU
+-!-Requested By = ????? Owner of SSL?
+--Risk = Moderate
+--Short description = 'SSL Renewal - [name]'
+--App Pool Reset (include URL/websites) = false
+--Backup Target Database = false
+--BIG IP (Drainstop nodes, Main...) = false
+--CI Bulk Load = false
+--Configuration Item Down = false
+--Describe why no testing = Standard Change
+--Install Service = false
+-!-None = false ===== what is this?
+--Reason for no testing = Testing Not Applicable
+--Stop/Restart Service = false
+--Sub type = Server Equipment/Software
+--Verification Plan = 'Verify the site responds with new cert'
+--Was testing performed = No
+--Urgency = '3 - Average'
+
+
+
+
 --approval-not yet requested
 --type-non standard
 --requested_by-contact
