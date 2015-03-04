@@ -1,5 +1,9 @@
 TO DO...
 
+--
+
+Prevent user from selecting deployment date in past
+
 -- 
 
 Update 'let expire' workflow stuff
