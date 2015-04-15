@@ -1,0 +1,36 @@
+SSL Testing Outline:
+
+	#####--Initial criteria--#####
+	#--Expires in 90 days--------#
+	#--Not a wildcard cert-------#
+	#--Type is Web Site----------# 
+	#--Owner is Maritz-----------#
+	#--Manufacturer is Digicert--#
+	##############################
+
+-- End-to-end on a valid SSL certificate model
+	-- Open Request Item 
+	-- CI updates
+		-- New expiration date
+		-- Logging
+	-- Renewal record
+	-- Digi cost check
+	-- Cost allocations
+	-- Change request
+	-- PowerShell script logging
+-- Contact change
+	-- Verify notifications
+	-- CI updates
+-- Secondary criteria
+	-- Exclude from automation check
+	-- Load balancer check
+	-- Relationship check
+	-- WSO task with proper info
+-- Let expire
+	-- Decommission SSL task
+	-- CI updates
+-- Change
+	-- Verify Change Request update
+	-- Verify reschedule of execution
+-- Cancel
+	-- Verify Change Request closure
