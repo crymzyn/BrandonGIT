@@ -1,5 +1,10 @@
 TO DO...
 
+PROJECT LOPAN
+- Assume we have user object in SN and tied to dept
+- Use dept role to provision rest of account and hardware
+
+
 -- Prevent user from selecting deployment date in past
 -- Update 'let expire' workflow stuff
 -- On the let expire a task should be kicked out to WSO to remove domain from DNS
