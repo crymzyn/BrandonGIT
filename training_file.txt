@@ -1,0 +1,24 @@
+//TEST 1: Using 'Scripts - Background' and GlideRecord queries in dev, find the sys_id of our department (Service Assurance - 30868)
+
+var dept = new GlideRecord('cmn_department');
+dept.addQuery('name','CONTAINS','Service Assurance');
+dept.query();
+
+while (dept.next()) {
+	gs.log('BSY --> dept sys_id = ' + dept.sys_id);
+}
+
+//alternative answer using gs.getUser():
+
+var user = gs.getUser().getUserByID('YocomBS');
+gs.log('BSY --> dept sys_id = ' + user.getDepartmentID());
+
+//TEST 2: Using 'Scripts - Background' and GlideRecord queries in dev, find the name of the contact for the SSL named *.awardhq.com
+
+var ssl = new GlideRecord('u_ssl');
+ssl.addQuery('name','*.awardhq.com');
+ssl.query();
+
+if (ssl.next()) {
+	gs.log('BSY --> contact name for ssl = ' + ssl.u_contact_name.name);
+}

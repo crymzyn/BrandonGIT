@@ -1,0 +1,35 @@
+TO DO...
+
+DOMAIN NAME:
+
+-!- Up front check to see if domain name even needs to be renewed
+-!- Ask Lara how to kill other tasks in workflow when one fork is satisfied
+
+-2- Client-owned - business rule 1 week after expiration to check if valid 
+-2- Pricing Module - workflow is created, just have to create table for data to be placed and parse
+	-- Ability to do more than just .COM
+-2- Report for domains that are not included in job (!ENOM !COM) - Tonya
+
+-x- Notifications - email (easy) ---------- need to use close email if I can
+	-- Extend email is GOOD
+	-- Change email is GOOD
+	-- Expire email is GOOD
+-x- Logging up front to see when job kicks off - GOOD
+-x- Inactive when expiring - GOOD
+-x- Hide save button
+
+SSL:
+
+-- Start working on workflow...  need to push this to get it finished before Thanksgiving
+-- Windows web/IIS servers - Digi ONLY
+-- Same billing
+-- 11/21/14 - DDAY
+
+OTHER:
+
+-- Live Data in Eureka test - valid?  Check with Lara...
+
+HOME:
+
+-- List wedding dress for C - waiting for pictures from her
+-- HVAC Filter

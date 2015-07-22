@@ -1,0 +1,7 @@
+var test = '{"servers":[{"baseIP":"156.45.66.151","websites":[{"ip":"156.45.66.159","port":"443"}]},{"baseIP":"156.45.66.151","websites":[{"ip":"156.45.66.159","port":"443"}]},{"baseIP":"156.45.66.151","websites":[{"ip":"156.45.66.159","port":"443"}]}]}'
+gs.log('Input: ' + test);
+
+var parser = new JSONParser();
+var parsed = parser.parse(test);
+
+gs.log(parsed.servers[0].baseIP);
