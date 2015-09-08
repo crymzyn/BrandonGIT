@@ -1,9 +1,30 @@
 TO DO...
 
+GO TIME (FIC):
+Inbound Alerts:
+-x- Create REST jobs to get records (Windows & Linux)
+-x- Place records in Inbound File Integrity Checks
+-x- Business rules in IFIC to kick off workflow
+-x- Workflow checks against CHG to see if we have one
+-x- Workflow checks against rule set to make sure we are concerned
+-x- Workflow opens incident if needed
+-x- Create entry in Automation Log table
+
+Rule Mgmt:
+-- Import rule entries from Paul's CSV files (Windows & Linux) 50%
+-x- Discover wwwroot folders and add those (if I can for this stage) 
+-- Daily job to run these against Windows servers (Linux manual for now) 50%
+-- Open incident to FIC group or Windows/Linux Ops according to error from script
+-- Create entries in Rule Deployment table
+
+
+_____________________________________________________________________________________
+
+
+
 PROJECT LOPAN
 - Assume we have user object in SN and tied to dept
 - Use dept role to provision rest of account and hardware
-
 
 -- Prevent user from selecting deployment date in past
 -- Update 'let expire' workflow stuff
