@@ -1,5 +1,24 @@
 TO DO...
 
+start_over...
+-- Audit CI business rules - take zena jobs out...
+-- SSL testing
+-- Finish Zena
+-- Dettenmeier
+
+Lease Info Tab - Expose for all servers
+Asset.Maint Vendor & Maint Type (field exists - add to report)
+Related tickets EOL...
+
+Kamran, Andy, Shannon...
+
+#################
+-- Forms fixed --
+#################
+
+cmdb_ci - tab-related client scripts
+cancel button on RITMs
+
 GO TIME (FIC):
 Inbound Alerts:
 -x- Create REST jobs to get records (Windows & Linux)
