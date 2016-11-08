@@ -1,0 +1,92 @@
+Font Icon Examples:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Basic Bootstrap Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional Bootstrap theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+<body>
+    <h1>Server Storage Examples</h1>
+        <div class="glyphicon-ring glyphicon-white"> <span class="glyphicon glyphicon-hdd glyphicon-bordered"></span>
+        </div>
+       <div class="glyphicon-ring glyphicon-blue"> <span class="glyphicon glyphicon-hdd glyphicon-bordered"></span>
+       </div>
+       <div class="glyphicon-ring glyphicon-blue-shadow"> <span class="glyphicon glyphicon-hdd glyphicon-bordered"></span>
+        </div>
+  
+    <h1>Telecom Examples</h1>
+        <div class="glyphicon-ring glyphicon-white"> <span class="glyphicon glyphicon-earphone glyphicon-bordered"></span>
+        </div>
+       <div class="glyphicon-ring glyphicon-red"> <span class="glyphicon glyphicon-earphone glyphicon-bordered"></span>
+        </div>
+        <div class="glyphicon-ring glyphicon-red-shadow"> <span class="glyphicon glyphicon-earphone glyphicon-bordered"></span>
+        </div>
+        
+       <h1>Security Examples</h1>
+        <div class="glyphicon-ring glyphicon-white"> <span class="fa fa-shield glyphicon-bordered"></span>
+        </div>
+       <div class="glyphicon-ring glyphicon-red"> <span class="fa fa-shield glyphicon-bordered"></span>
+        </div>
+        <div class="glyphicon-ring glyphicon-red-shadow"> <span class="fa fa-shield glyphicon-bordered"></span>
+        </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/047d7bec24.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
+
+/**CSS FOR THE RING**/
+
+.glyphicon-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid white;
+  color: white;
+  display: inline-table;
+  text-align: center;
+}
+/**CSS FOR ICON WITH NO BACKGROUND COLOR**/
+
+.glyphicon-ring .glyphicon-bordered {
+  font-size: 20px;
+  vertical-align: middle;
+  display: table-cell;
+}
+/**WITH AN ADDED BACKGROUND COLOR**/
+
+.glyphicon-white {
+  background: white;
+  color: green;
+  border: 4px solid black;
+}
+.glyphicon-blue {
+  background: blue;
+  color: white;
+  border: 0px;
+}
+.glyphicon-blue-shadow {
+  background: radial-gradient(blue 40%, #000);
+  color: white;
+  border: 0px;
+}
+.glyphicon-red {
+  background: red;
+  color: white;
+  border: 0px;
+}
+.glyphicon-red-shadow {
+  background: radial-gradient(red 40%, #000);
+  color: white;
+  border: 0px;
+}
+.glyphicon-teal {
+  background: teal;
+  color: orange;
+}

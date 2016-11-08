@@ -1,0 +1,11 @@
+TO DO - HELSINKI UPGRADE
+- Mid Servers
+- Firewall Rule Request
+- Test Automations
+- Build Automations
+	- IP Automation
+	- User Provisioning
+	- EOL Quarterly
+- Survey
+- Marketing
+- Set up meeting with Becky P group + Ian
