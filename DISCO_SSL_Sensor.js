@@ -1,15 +1,17 @@
 new DiscoverySensor({
 	process: function(result) {
 				
-		//gs.log('HELLLLLOOOOOO1',scriptTag);
+		//gs.log('HELLLLLOOOOOO1',scriptTag); updated
 		var scriptTag = 'SSL_Disco';
-		//gs.log('HELLLLLOOOOOO1',scriptTag);
+		gs.log('Start Sensor 1',scriptTag);
 		
 		var parser = new JSONParser();
 		var output = parser.parse(result.output);
 		var globalnewid = '';
 		var blank = 'null';
 		var ssltype = '';
+		
+		var maritzUtil = new MaritzDiscoveryFunctions();
 		
 		//gs.log('HELLLLLOOOOOO2',scriptTag);
 		//gs.log('output length = ' + output.length,scriptTag);
@@ -39,12 +41,17 @@ new DiscoverySensor({
 			var bsNil = JSUtil.nil(u_sn_boundsite);
 			var baNil = JSUtil.nil(u_sn_boundaddress);
 			
+			
+			var bsArray = [];
+			var baArray = [];
+			
 			//var bs = '';
 			//bs += u_sn_boundsite;
 			//var bs1 = bs.trim();
 			//gs.log('bs1:'+ bs1 ,scriptTag);
 			
 			if (!baNil) {
+				baArray = u_sn_boundaddress;
 				gs.log('length = ' + u_sn_boundaddress.length + ' & 1st entry = ' + u_sn_boundaddress[0],scriptTag);
 			}
 			else {
@@ -55,8 +62,9 @@ new DiscoverySensor({
 			//ba += u_sn_boundaddress;
 			//var ba1 = ba.trim();
 			//gs.log('ba1:'+ ba1 ,scriptTag);
-			
-			if (bsNil) {
+
+			if (!bsNil) {
+				bsArray = u_sn_boundsite;
 				gs.log('length = ' + u_sn_boundsite.length + ' & 1st entry = ' + u_sn_boundsite[0],scriptTag);
 			}
 			else {
@@ -76,9 +84,6 @@ new DiscoverySensor({
 			var so = '';
 			so += u_sn_subjectorg;
 			var so1 = so.trim();
-			
-			
-			
 			
 			var snlower = sc1.toString().toLowerCase();
 			var cnlower = cn1.toString().toLowerCase();
@@ -109,7 +114,7 @@ new DiscoverySensor({
 				ssltype = 'Web Site';
 				//gs.log('scwebsite'+ sc,scriptTag);
 			}
-			//gs.log('got past bs check',scriptTag);
+			gs.log('got past bs check',scriptTag);
 			
 			//get JSON date conversions
 			var exp_sp1 = u_sn_expirationdate.split('(');
@@ -140,7 +145,7 @@ new DiscoverySensor({
 			
 			
 			if (checkSSLCI.next()) {
-				
+				gs.log('1st match',scriptTag);
 				//update
 				//gs.log('FOUND1:' + 'tb',scriptTag);
 				var total = checkSSLCI.getRowCount();
@@ -174,7 +179,8 @@ new DiscoverySensor({
 				
 				else {
 					
-					var return_sslname = checkSSLCI.name.toLowerCase();
+					var return_sslname = checkSSLCI.name.toLowerCase().trim();
+											
 					
 					//gs.log('Ticket not made', scriptTag);
 					//gs.log('returnssl: ' + return_sslname,scriptTag);
@@ -206,6 +212,7 @@ new DiscoverySensor({
 						if (bsNil || baNil) {
 							//##### BEGIN SERVER RELATIONSHIP #####
 							//gs.log('INSIDEBOUND' + blank ,scriptTag);
+							
 							var parent = new GlideRecord('cmdb_ci_win_server');
 							parent.addQuery('name', u_sn_computername);
 							parent.addQuery('ip_address', source);
@@ -214,25 +221,7 @@ new DiscoverySensor({
 							//gs.log('source: '+ source ,scriptTag);
 							
 							if (parent.next()) {
-								
-								var checkrel = new GlideRecord('cmdb_rel_ci');
-								checkrel.addQuery('parent', parent.sys_id);
-								checkrel.addQuery('child', globalnewid);
-								checkrel.addQuery('sys_created_by', 's_UCMDBDiscovery'); //S_UCMDBDiscovery
-								checkrel.query();
-								
-								if (checkrel.next()) {
-									checkrel.setValue('u_rel_last_discovered', today);
-									checkrel.update();
-								}
-								else {
-									var relation = new GlideRecord('cmdb_rel_ci');
-									relation.setValue('parent', parent.sys_id);
-									relation.setValue('child', globalnewid);
-									relation.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-									relation.setValue('u_rel_last_discovered', today);
-									relation.insert();
-								}
+								maritzUtil.createRelationshipFromSysIds(parent.sys_id,globalnewid,'Contains::Contained by',today);
 							}
 							//##### END SERVER RELATIONSHIP #####
 						}
@@ -242,9 +231,9 @@ new DiscoverySensor({
 							//var temp = u_sn_boundaddress.split(':');
 							//var web_temp = temp[0];
 							
-							for (var ws = 0;ws < u_sn_boundaddress.length;ws++) {
-								var bs = u_sn_boundsite[ws];
-								var temp = u_sn_boundaddress[ws].split(':');
+							for (var ws = 0;ws < baArray.length;ws++) {
+								var bs = bsArray[ws];
+								var temp = baArray[ws].split(':');
 								var web_temp = temp[0];
 								var website = new GlideRecord('cmdb_ci_web_site');
 								website.addQuery('name', bs);
@@ -284,39 +273,19 @@ new DiscoverySensor({
 								}
 								else {
 									
-									if (website.next()) {
-											
-										//gs.log('MAKERELATIONLKJDSF',scriptTag);
-										var checkrelweb = new GlideRecord('cmdb_rel_ci');
-										checkrelweb.addQuery('parent', website.sys_id);
-										checkrelweb.addQuery('child', globalnewid);
-										checkrelweb.addQuery('sys_created_by', 's_UCMDBDiscovery');
-										checkrelweb.query();
+									if (website.next()) {											///ssltype check
+										var precheck = new GlideRecord('u_ssl');
+										precheck.addQuery('sys_id', globalnewid);
+										precheck.query();
 										
-										if (checkrelweb.next()) {
-											//gs.log('UPDATEONLYREL',scriptTag);
-											checkrelweb.setValue('u_rel_last_discovered', today);
-											checkrelweb.update();
-										}
-										else {
-											///ssltype check
-											var precheck = new GlideRecord('u_ssl');
-											precheck.addQuery('sys_id', globalnewid);
-											precheck.query();
-											
-											if (precheck.next()) {
-												if (precheck.u_type != 'Web Site') {
-													precheck.setValue('u_type', 'Web Site');
-													precheck.update();
-												}
+										if (precheck.next()) {
+											if (precheck.u_type != 'Web Site') {
+												precheck.setValue('u_type', 'Web Site');
+												precheck.update();
 											}
-											var relationweb = new GlideRecord('cmdb_rel_ci');
-											relationweb.setValue('parent', website.sys_id);
-											relationweb.setValue('child', globalnewid);
-											relationweb.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-											relationweb.setValue('u_rel_last_discovered', today);
-											relationweb.insert();
 										}
+										maritzUtil.createRelationshipFromSysIds(website.sys_id,globalnewid,'Contains::Contained by',today);	
+										
 											
 										//##### BEGIN URL RELATIONSHIP #####
 										var url = new GlideRecord('cmdb_rel_ci');
@@ -329,26 +298,7 @@ new DiscoverySensor({
 											//gs.log('url:' + urlid,scriptTag);
 											//gs.log('class:' + u_url,scriptTag);
 											
-											var checksslurl = new GlideRecord('cmdb_rel_ci');
-											checksslurl.addQuery('parent', globalnewid);
-											checksslurl.addQuery('child', urlid);
-											checksslurl.query();
-												
-											if (checksslurl.next()) {
-												//not working
-												checksslurl.setValue('u_rel_last_discovered', today);
-												checksslurl.update();
-												//gs.log('UPDATE URL CI',scriptTag);
-											}
-											else {												
-												var sslurlmake = new GlideRecord('cmdb_rel_ci');
-												sslurlmake.setValue('parent', globalnewid);
-												sslurlmake.setValue('child', urlid);
-												sslurlmake.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-												sslurlmake.setValue('u_rel_last_discovered', today);
-												sslurlmake.insert();
-												//gs.log('DOOOOONE with CREAUE URL',scriptTag);
-											}
+											maritzUtil.createRelationshipFromSysIds(globalnewid,urlid,'Contains::Contained by',today);	
 										}
 										else {
 												
@@ -423,7 +373,7 @@ new DiscoverySensor({
 
 			//#### NO MATCH ON THUMBPRINT - OTHER CHECKS ####
 			else {
-					
+				gs.log('1st no match',scriptTag);
 				//##### 1ST NO MATCH ON THUMBPRINT SCENARIO: MATCH ON EXP DATE AND NAME #####
 				var gdt = new GlideDateTime(expdate);
 				var expgtd = (gdt.getDate()); //return just 2015-08-12  no time
@@ -450,7 +400,7 @@ new DiscoverySensor({
 						
 						//gs.log('Create Ticket more 1 SCN' + total2, scriptTag);
 						var verify2a = new GlideRecord('incident');
-						verify2a.addQuery('short_description', "Dup SubjectCommonName: " + u_sn_subjectcommon + " and Expiration Date:" + expgtd);
+						verify2a.addQuery('short_description', "Dup SubjectCommonName: " + u_sn_subjectcommon + " and Expiration Date: " + expgtd);
 						verify2a.addQuery('caller_id', '0a9cfdb32b1dcec0f40a59efe8da1566');
 						verify2a.addQuery('active', '=', true);
 						verify2a.query();
@@ -461,7 +411,7 @@ new DiscoverySensor({
 							ticket2a.assignment_group = 'd5d6f4800009e000ba87f47595a1d103'; //A&I Services
 							ticket2a.caller_id = '0a9cfdb32b1dcec0f40a59efe8da1566'; //Discovery
 							ticket2a.u_event_start_date = today;
-							ticket2a.short_description = "Dup SubjectCommonName: " + u_sn_subjectcommon + " and Expiration Date:" + expgtd;
+							ticket2a.short_description = "Dup SubjectCommonName: " + u_sn_subjectcommon + " and Expiration Date: " + expgtd;
 							ticket2a.description = "Dup Config SSL CIs with the same SubjectCommonName: " + u_sn_subjectcommon + " and Expiration Date: " + expgtd;
 							ticket2a.contact_type = 'internally-identified';
 							ticket2a.category = 'Data';
@@ -472,6 +422,13 @@ new DiscoverySensor({
 						}
 					}
 					else {
+						
+						var disconull = JSUtil.nil(check2SSLCI.u_sn_thumbprint);
+						var discothumb = check2SSLCI.u_sn_thumbprint;
+						gs.log('null' + disconull,scriptTag);	
+						gs.log('existthumb' + discothumb,scriptTag);
+						gs.log('sysid' + check2SSLCI.sys_id,scriptTag);	
+						if (disconull == true) {
 						
 						check2SSLCI.setValue('u_sn_creationdate', createdate);
 						check2SSLCI.setValue('u_sn_expirationdate', expdate);
@@ -490,8 +447,59 @@ new DiscoverySensor({
 						check2SSLCI.setValue('u_last_discovered', today);
 						globalnewid = check2SSLCI.sys_id;
 						check2SSLCI.update();
+						} else {
+							
+						var check2SSLCII = new GlideRecord('u_ssl');
+						check2SSLCII.setValue('u_sn_creationdate', createdate);
+						check2SSLCII.setValue('u_sn_expirationdate', expdate);
+						check2SSLCII.setValue('u_expiration_date', expdate);
+						check2SSLCII.setValue('u_sn_hasprivatekey', u_sn_hasprivatekey);
+						check2SSLCII.setValue('u_sn_issuercommonname', u_sn_issuercommonname);
+						check2SSLCII.setValue('u_sn_issuerorg', u_sn_issuerorg);
+						check2SSLCII.setValue('u_sn_signalgoritm', u_sn_signalgoritm);
+						check2SSLCII.setValue('u_sn_subjectcommon', u_sn_subjectcommon);
+						check2SSLCII.setValue('u_sn_subjectcountry', u_sn_subjectcountry);
+						check2SSLCII.setValue('u_sn_subjectloc', u_sn_subjectloc);
+						check2SSLCII.setValue('u_sn_subjectorg', u_sn_subjectorg);
+						check2SSLCII.setValue('u_sn_subjectorgunit', u_sn_subjectorgunit);
+						check2SSLCII.setValue('u_sn_subjectstate', u_sn_subjectstate);
+						check2SSLCII.setValue('u_sn_thumbprint', u_sn_thumbprint);
+						check2SSLCII.setValue('name', u_sn_subjectcommon);
+						check2SSLCII.setValue('install_status', '101');
+						check2SSLCII.setValue('support_group', '4ed6f4800009e000ba87f47595a1d1d8'); //Windows Server Ops
+						check2SSLCII.setValue('u_last_discovered', today);
+						check2SSLCII.setValue('u_type', ssltype);
+						check2SSLCII.setValue('u_owner', owner);
+						var newid4 = check2SSLCII.insert();
+						globalnewid = newid4;
+						check2SSLCII.insert(); 
 						
+						var verifynull = new GlideRecord('incident');
+						verifynull.addQuery('short_description', "Diff Thumbprint w/ same name: " + u_sn_subjectcommon + " and Exp Date: " + expgtd);
+						verifynull.addQuery('caller_id', '0a9cfdb32b1dcec0f40a59efe8da1566');
+						verifynull.addQuery('active', '=', true);
+						verifynull.query();
 						
+						if (!verifynull.next()) {
+							
+							var ticketnull = new GlideRecord('incident');
+							ticketnull.assignment_group = '4ed6f4800009e000ba87f47595a1d1d8'; //Windows Server Ops
+							ticketnull.caller_id = '0a9cfdb32b1dcec0f40a59efe8da1566'; //Discovery
+							ticketnull.u_event_start_date = today;
+							ticketnull.short_description = "Diff Thumbprint w/ same name: " + u_sn_subjectcommon + " and Exp Date: " + expgtd;
+							ticketnull.description = "Different Thumbprint same name: " + u_sn_subjectcommon + " and Expiration Date: " + expgtd + " Discovery Thumbprint: " + u_sn_thumbprint + " Existing Thumbprint: " + discothumb;
+							ticketnull.contact_type = 'internally-identified';
+							ticketnull.category = 'Data';
+							ticketnull.subcategory = 'Data or file incorrect';
+							ticketnull.impact = '3';
+							ticketnull.urgency = '3';
+							ticketnull.cmdb_ci = globalnewid;
+							ticketnull.insert();
+						}
+											
+						}
+							
+												
 						if (bsNil || baNil) {
 							//#### BEGIN SERVER RELATIONSHIP ####
 
@@ -506,37 +514,18 @@ new DiscoverySensor({
 							
 							
 							if (parent2.next()) {
-									
-								var checkrel2 = new GlideRecord('cmdb_rel_ci');
-								checkrel2.addQuery('parent', parent2.sys_id);
-								checkrel2.addQuery('child', globalnewid);
-								checkrel2.addQuery('sys_created_by', 's_UCMDBDiscovery'); //S_UCMDBDiscovery
-								checkrel2.query();
-								
-								if (checkrel2.next()) {
-									checkrel2.setValue('u_rel_last_discovered', today);
-									checkrel2.update();
-								} 
-								else {
-									
-									var relation2 = new GlideRecord('cmdb_rel_ci');
-									relation2.setValue('parent', parent2.sys_id);
-									relation2.setValue('child', globalnewid);
-									relation2.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-									relation2.setValue('u_rel_last_discovered', today);
-									relation2.insert();
-								}
+								maritzUtil.createRelationshipFromSysIds(parent2.sys_id,globalnewid,'Contains::Contained by',today);
 							}
 							//#### END SERVER RELATIONSHIP ####
 						} 
 						else {
 							//#### BEGIN WEBSITE RELATIONSHIP ####
-							for (var ws2 = 0;ws2 < u_sn_boundaddress.length;ws2++) {
+							for (var ws2 = 0;ws2 < baArray.length;ws2++) {
 								//get website ip
 								//var temp2 = u_sn_boundaddress.split(':');
 								//var web_temp2 = temp2[0];
-								var bs2 = u_sn_boundsite[ws2];
-								var temp2 = u_sn_boundaddress[ws2].split(':');
+								var bs2 = bsArray[ws2];
+								var temp2 = baArray[ws2].split(':');
 								var web_temp2 = temp2[0];
 									
 								var website2 = new GlideRecord('cmdb_ci_web_site');
@@ -577,26 +566,7 @@ new DiscoverySensor({
 								else {
 										
 									if (website2.next()) {
-										//gs.log('MAKERELATIONLKJDSF',scriptTag);
-										var checkrelweb2 = new GlideRecord('cmdb_rel_ci');
-										checkrelweb2.addQuery('parent', website2.sys_id);
-										checkrelweb2.addQuery('child', globalnewid);
-										checkrelweb2.addQuery('sys_created_by', 's_UCMDBDiscovery');
-										checkrelweb2.query();
-										
-										if (checkrelweb2.next()) {
-											//gs.log('UPDATEONLYREL',scriptTag);
-											checkrelweb2.setValue('u_rel_last_discovered', today);
-											checkrelweb2.update();
-										} 
-										else {
-											var relationweb2 = new GlideRecord('cmdb_rel_ci');
-											relationweb2.setValue('parent', website2.sys_id);
-											relationweb2.setValue('child', globalnewid);
-											relationweb2.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-											relationweb2.setValue('u_rel_last_discovered', today);
-											relationweb2.insert();
-										}
+										maritzUtil.createRelationshipFromSysIds(website2.sys_id,globalnewid,'Contains::Contained by',today);
 										
 										//#### BEGIN URL RELATIONSHIP ####
 										var url2 = new GlideRecord('cmdb_rel_ci');
@@ -608,27 +578,7 @@ new DiscoverySensor({
 											//gs.log('url2:' + urlid2,scriptTag);
 											//gs.log('class:' + u_url,scriptTag);
 											
-											var checksslurl2 = new GlideRecord('cmdb_rel_ci');
-											checksslurl2.addQuery('parent', globalnewid);
-											checksslurl2.addQuery('child', urlid2);
-											checksslurl2.query();
-											
-											if (checksslurl2.next()) {
-												//not working
-												checksslurl2.setValue('u_rel_last_discovered', today);
-												checksslurl2.update();
-												//gs.log('UPDATE URL2 CI',scriptTag);
-											} 
-											else {
-												
-												var sslurlmake2 = new GlideRecord('cmdb_rel_ci');
-												sslurlmake2.setValue('parent', globalnewid);
-												sslurlmake2.setValue('child', urlid2);
-												sslurlmake2.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-												sslurlmake2.setValue('u_rel_last_discovered', today);
-												sslurlmake2.insert();
-												//gs.log('DOOOOONE2222 with CREAUE URL',scriptTag);
-											}
+											maritzUtil.createRelationshipFromSysIds(globalnewid,urlid2,'Contains::Contained by',today);
 										}  
 
 										else {
@@ -669,15 +619,17 @@ new DiscoverySensor({
 
 				//#### 2ND NO MATCH ON THUMBPRINT SCENARIO: NO MATCH ON EXP DATE/NAME >> CREATE NEW SSL CI ####
 				else {
+					gs.log('2nd no match',scriptTag);
 					//create new CI
 					//gs.log('companyorg: '+ companyorg,scriptTag);
 					var owner = '';
-					var detailsclient = companyorg.indexOf("maritz") > -1;
+					var detailsclient = (companyorg.indexOf("maritz") > -1);
 					if (detailsclient == true) {
 						owner = "Maritz";
 						//gs.log('owner is maritz: '+ owner + ' ' + detailsclient,scriptTag);
-					} else {
-						owner = "-- None --";
+					} 
+					else {
+						owner = "";
 						//gs.log('owner is none: '+ owner + ' ' + detailsclient,scriptTag);
 					}
 						
@@ -720,37 +672,18 @@ new DiscoverySensor({
 						parent3.query();
 						
 						if (parent3.next()) {
-							
-							var checkrel3 = new GlideRecord('cmdb_rel_ci');
-							checkrel3.addQuery('parent', parent3.sys_id);
-							checkrel3.addQuery('child', globalnewid);
-							checkrel3.addQuery('sys_created_by', 's_UCMDBDiscovery'); //S_UCMDBDiscovery
-							checkrel3.query();
-							
-							if (checkrel3.next()) {
-								checkrel3.setValue('u_rel_last_discovered', today);
-								checkrel3.update();
-							} 
-							else {
-									
-									var relation3 = new GlideRecord('cmdb_rel_ci');
-									relation3.setValue('parent', parent3.sys_id);
-									relation3.setValue('child', globalnewid);
-									relation3.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-									relation3.setValue('u_rel_last_discovered', today);
-									relation3.insert();
-							}
+							maritzUtil.createRelationshipFromSysIds(parent3.sys_id,globalnewid,'Contains::Contained by',today);
 						}  
 						//#### END SERVER RELATIONSHIP ####
 					} 
 					else {
 						//##### BEGIN WEBSITE RELATIONSHIP #####
-						for(var ws3 = 0;ws3 < u_sn_boundaddress.length;ws3++) {
+						for(var ws3 = 0;ws3 < baArray.length;ws3++) {
 							//get website ip
 							//var temp3 = u_sn_boundaddress.split(':');
 							//var web_temp3 = temp3[0];
-							var bs3 = u_sn_boundsite[ws3];
-							var temp3 = u_sn_boundaddress[ws3].split(':');
+							var bs3 = bsArray[ws3];
+							var temp3 = baArray[ws3].split(':');
 							var web_temp3 = temp3[0];	
 								
 							var website3 = new GlideRecord('cmdb_ci_web_site');
@@ -762,7 +695,7 @@ new DiscoverySensor({
 							
 							if (websitetotal3 > 1) {
 								gs.log('POSTwebsite total:' + websitetotal3,scriptTag);
-								//check for DUP before insert of INC*********************
+								//check for DUP before insert of INC
 								var webverify3 = new GlideRecord('incident');
 								//webverify3.addQuery('short_description', "SSL Boundsite > 1 website CI: " + bs);
 								webverify3.addQuery('description','CONTAINS', "SSL Boundsite with more than one website CI: " + bs3 + " on server: " + cnlower);
@@ -791,28 +724,8 @@ new DiscoverySensor({
 							else {
 								
 								if (website3.next()) {
-									//gs.log('MAKERELATION3333LKJDSF',scriptTag);
-									var checkrelweb3 = new GlideRecord('cmdb_rel_ci');
-									checkrelweb3.addQuery('parent', website3.sys_id);
-									checkrelweb3.addQuery('child', globalnewid);
-									checkrelweb3.addQuery('sys_created_by', 's_UCMDBDiscovery');
-									checkrelweb3.query();
-									
-									if (checkrelweb3.next()) {
-										//gs.log('UPDATEONLYRE33333L',scriptTag);
-										checkrelweb3.setValue('u_rel_last_discovered', today);
-										checkrelweb3.update();
-									} 
-									else {
-										
-										var relationweb3 = new GlideRecord('cmdb_rel_ci');
-										relationweb3.setValue('parent', website3.sys_id);
-										relationweb3.setValue('child', globalnewid);
-										relationweb3.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-										relationweb3.setValue('u_rel_last_discovered', today);
-										relationweb3.insert();
-									}
-									
+									maritzUtil.createRelationshipFromSysIds(website3.sys_id,globalnewid,'Contains::Contained by',today);
+
 									//#### BEGIN URL RELATIONSHIP ####
 									var url3 = new GlideRecord('cmdb_rel_ci');
 									url3.addQuery('parent', website3.sys_id);
@@ -823,26 +736,7 @@ new DiscoverySensor({
 										//gs.log('url3:' + urlid3,scriptTag);
 										//gs.log('class:' + u_url,scriptTag);
 										
-										var checksslurl3 = new GlideRecord('cmdb_rel_ci');
-										checksslurl3.addQuery('parent', globalnewid);
-										checksslurl3.addQuery('child', urlid3);
-										checksslurl3.query();
-										
-										if (checksslurl3.next()) {
-											//not working
-											checksslurl3.setValue('u_rel_last_discovered', today);
-											checksslurl3.update();
-											//gs.log('UPDATE URL333 CI',scriptTag);
-										} 
-										else {
-											var sslurlmake3 = new GlideRecord('cmdb_rel_ci');
-											sslurlmake3.setValue('parent', globalnewid);
-											sslurlmake3.setValue('child', urlid3);
-											sslurlmake3.setValue('type', '55c95bf6c0a8010e0118ec7056ebc54d'); //Contains::Contained by
-											sslurlmake3.setValue('u_rel_last_discovered', today);
-											sslurlmake3.insert();
-											//gs.log('DOOOOONE3333 with CREATE URL',scriptTag);
-										}
+										maritzUtil.createRelationshipFromSysIds(globalnewid,urlid3,'Contains::Contained by',today);	
 									}
 									else {
 										//gs.log('INC3333333333333333',scriptTag);
@@ -872,10 +766,10 @@ new DiscoverySensor({
 										}
 									}
 									//#### END URL RELATIONSHIP ####
-								} //website 3
+								}
 							}
 						}
-						//#### END WEBSITE RELATIONSHIP ####
+						//#### END WEBSITE RELATIONSHIP ####	
 					}
 				}
 				//#### 2ND NO MATCH ON THUMBPRINT SCENARIO END ####
